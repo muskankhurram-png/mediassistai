@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Write Prescription — MediAssist AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Write Prescription</h2>
+    <p>For {{ patient.user.name }}</p>
+</div>
+
+<div class="card" style="max-width: 700px;">
+    <form method="post" action="/patients/{{ patient.id }}/prescriptions/new" id="rxForm">
+
+        <h3 style="margin-bottom: var(--space-sm);">Medicines</h3>
+        <div id="medicineRows">
+            <div class="medicine-input-row">
+                <input type="text" name="med_name" placeholder="Medicine name" required>
+                <input type="text" name="med_dosage" placeholder="Dosage">
+                <input type="text" name="med_frequency" placeholder="Frequency">
+                <input type="text" name="med_duration" placeholder="Duration">
+                <button type="button" class="btn-remove" onclick="removeRow(this)">&times;</button>
+            </div>
+        </div>
+        <button type="button" class="btn btn-secondary" onclick="addRow()" style="margin-bottom: var(--space-md);">+ Add Medicine</button>
+
+        <div class="form-group">
+            <label for="notes">Notes for Patient</label>
+            <textarea id="notes" name="notes" rows="3" placeholder="e.g. Take after meals"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Prescription</button>
+    </form>
+</div>
+
+<script>
+function addRow() {
+    const container = document.getElementById('medicineRows');
+    const row = document.createElement('div');
+    row.className = 'medicine-input-row';
+    row.innerHTML = `
+        <input type="text" name="med_name" placeholder="Medicine name" required>
+        <input type="text" name="med_dosage" placeholder="Dosage">
+        <input type="text" name="med_frequency" placeholder="Frequency">
+        <input type="text" name="med_duration" placeholder="Duration">
+        <button type="button" class="btn-remove" onclick="removeRow(this)">&times;</button>
+    `;
+    container.appendChild(row);
+}
+
+function removeRow(button) {
+    const rows = document.querySelectorAll('.medicine-input-row');
+    if (rows.length > 1) {
+        button.closest('.medicine-input-row').remove();
+    }
+}
+</script>
+{% endblock %}

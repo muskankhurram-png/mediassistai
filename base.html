@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MediAssist AI{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%F0%9F%A9%BA</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=20">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container navbar-inner">
+            <a href="/" class="navbar-brand">🩺 MediAssist AI</a>
+
+            <ul class="navbar-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/doctors">Find a Doctor</a></li>
+                {% if user and user.role == "patient" %}
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/appointments">My Appointments</a></li>
+                <li><a href="/prescriptions">My Prescriptions</a></li>
+                <li><a href="/reports">My Reports</a></li>
+                {% elif user and user.role == "doctor" %}
+                <li><a href="/doctor/dashboard">Dashboard</a></li>
+                {% endif %}
+            </ul>
+
+            <div class="navbar-user">
+                {% if user %}
+                    <span class="navbar-user-badge">{{ user.name }} · {{ user.role }}</span>
+                    <a href="/logout" class="btn btn-secondary">Logout</a>
+                {% else %}
+                    <a href="/login" class="btn btn-secondary">Login</a>
+                    <a href="/register" class="btn btn-primary">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="container page-content">
+        {% if success %}
+            <span data-toast="{{ success }}" data-toast-type="success" style="display:none;"></span>
+        {% endif %}
+        {% if error %}
+            <span data-toast="{{ error }}" data-toast-type="error" style="display:none;"></span>
+        {% endif %}
+        {% if request.query_params.get('success') %}
+            <span data-toast="{{ request.query_params.get('success') }}" data-toast-type="success" style="display:none;"></span>
+        {% endif %}
+        {% if request.query_params.get('error') %}
+            <span data-toast="{{ request.query_params.get('error') }}" data-toast-type="error" style="display:none;"></span>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            &copy; 2026 MediAssist AI &mdash; Educational project, not a substitute for professional medical advice.
+        </div>
+    </footer>
+
+    <div class="toast-container" id="toastContainer"></div>
+    <script src="/static/js/toast.js?v=2"></script>
+
+</body>
+</html>

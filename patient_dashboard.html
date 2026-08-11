@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — MediAssist AI{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+
+    <div class="stack-gap">
+        <div class="card profile-card">
+            <div class="profile-avatar">{{ user.name[0] | upper }}</div>
+            <h3>{{ user.name }}</h3>
+            <p style="margin-bottom: var(--space-sm);">{{ user.email }}</p>
+
+            {% if patient %}
+            <div style="text-align: left; margin-top: var(--space-md);">
+                <div class="profile-detail-row">
+                    <span class="profile-detail-label">Blood Group</span>
+                    <span class="profile-detail-value">{{ patient.blood_group or "Not set" }}</span>
+                </div>
+                <div class="profile-detail-row">
+                    <span class="profile-detail-label">Allergies</span>
+                    <span class="profile-detail-value">{{ patient.allergies or "None listed" }}</span>
+                </div>
+                <div class="profile-detail-row">
+                    <span class="profile-detail-label">Emergency Contact</span>
+                    <span class="profile-detail-value">{{ patient.emergency_contact or "Not set" }}</span>
+                </div>
+            </div>
+            {% else %}
+            <p style="margin-top: var(--space-sm);">You haven't completed your patient profile yet.</p>
+            <a href="/profile/setup" class="btn btn-primary" style="margin-top: var(--space-sm); width: 100%;">Complete Profile</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="stack-gap">
+
+        <div class="card">
+            <div class="section-title">
+                <h3>Upcoming Appointments</h3>
+                <a href="/doctors" class="btn btn-secondary" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Book New</a>
+            </div>
+
+            {% if appointments %}
+            <div class="list-stack">
+                {% for appt in appointments %}
+                <div class="list-item">
+                    <div class="list-item-main">
+                        <strong>Dr. {{ appt.doctor.user.name }}</strong>
+                        <span>{{ appt.date.strftime('%B %d, %Y at %I:%M %p') }}</span>
+                    </div>
+                    <span class="badge badge-primary">{{ appt.status }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">No upcoming appointments.</div>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <div class="section-title">
+                <h3>Recent Prescriptions</h3>
+            </div>
+
+            {% if prescriptions %}
+            <div class="list-stack">
+                {% for rx in prescriptions %}
+                <div class="list-item">
+                    <div class="list-item-main">
+                        <strong>Dr. {{ rx.doctor.user.name }}</strong>
+                        <span>{{ rx.medicines | length }} medicine(s){% if rx.notes %} &middot; {{ rx.notes }}{% endif %}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">No prescriptions yet.</div>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <div class="section-title">
+                <h3>Uploaded Reports</h3>
+                <a href="/reports/upload" class="btn btn-secondary" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Upload</a>
+            </div>
+
+            {% if reports %}
+            <div class="list-stack">
+                {% for report in reports %}
+                <div class="list-item">
+                    <div class="list-item-main">
+                        <strong>{{ report.type | replace('_', ' ') | title }}</strong>
+                        <span>{{ report.hospital or "Unknown hospital" }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">No reports uploaded yet.</div>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

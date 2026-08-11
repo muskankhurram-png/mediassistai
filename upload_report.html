@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Report — MediAssist AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Upload Medical Report</h2>
+    <p>Supported: PDF, JPG, PNG. Your report will be automatically summarized by AI.</p>
+</div>
+
+<div class="card" style="max-width: 600px;">
+    <form method="post" action="/reports/upload" enctype="multipart/form-data" id="uploadForm">
+
+        <div class="form-group">
+            <label for="type">Report Type</label>
+            <select id="type" name="type" required>
+                <option value="blood_test">Blood Test</option>
+                <option value="xray">X-ray</option>
+                <option value="mri">MRI</option>
+                <option value="ct_scan">CT Scan</option>
+                <option value="ultrasound">Ultrasound</option>
+                <option value="ecg">ECG</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="hospital">Hospital / Lab</label>
+            <input type="text" id="hospital" name="hospital" placeholder="e.g. City Hospital">
+        </div>
+
+        <div class="form-group">
+            <label for="doctor">Referring Doctor</label>
+            <input type="text" id="doctor" name="doctor" placeholder="e.g. Dr. Smith">
+        </div>
+
+        <div class="form-group">
+            <label for="report_date">Report Date</label>
+            <input type="date" id="report_date" name="report_date">
+        </div>
+
+        <div class="form-group">
+            <label>File</label>
+            <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+                <div class="dropzone-icon">📄</div>
+                <div class="dropzone-text">Click to choose a file, or drag it here</div>
+                <div class="dropzone-subtext">PDF, JPG, or PNG</div>
+                <div class="dropzone-filename" id="fileName"></div>
+            </div>
+            <input type="file" id="fileInput" name="file" accept=".pdf,.jpg,.jpeg,.png" required style="display:none;">
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: var(--space-sm);">Upload Report</button>
+    </form>
+</div>
+
+<script>
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+const fileNameDisplay = document.getElementById('fileName');
+
+fileInput.addEventListener('change', () => {
+    if (fileInput.files.length > 0) {
+        fileNameDisplay.textContent = '✓ ' + fileInput.files[0].name;
+        fileNameDisplay.style.display = 'block';
+    }
+});
+
+['dragover', 'dragenter'].forEach(evt => {
+    dropzone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+    });
+});
+
+['dragleave', 'drop'].forEach(evt => {
+    dropzone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+    });
+});
+
+dropzone.addEventListener('drop', (e) => {
+    if (e.dataTransfer.files.length > 0) {
+        fileInput.files = e.dataTransfer.files;
+        fileNameDisplay.textContent = '✓ ' + e.dataTransfer.files[0].name;
+        fileNameDisplay.style.display = 'block';
+    }
+});
+</script>
+{% endblock %}

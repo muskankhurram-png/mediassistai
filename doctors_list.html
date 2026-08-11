@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Find a Doctor — MediAssist AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Find a Doctor</h2>
+    <p>Browse available doctors and request to be added to their care.</p>
+</div>
+
+{% if doctors %}
+<div class="doctor-grid">
+    {% for doctor in doctors %}
+    <div class="card doctor-card">
+        <div class="profile-avatar">{{ doctor.user.name[0] | upper }}</div>
+        <h3>Dr. {{ doctor.user.name }}</h3>
+        <div class="doctor-specialization">{{ doctor.specialization or "General Practice" }}</div>
+        <div class="doctor-availability">{{ doctor.availability or "Contact for availability" }}</div>
+
+        {% if user and user.role == "patient" %}
+            {% if doctor.id in requested_doctor_ids %}
+            <span class="badge badge-warning">Request Pending</span>
+            {% elif doctor.id in approved_doctor_ids %}
+            <a href="/doctors/{{ doctor.id }}/book" class="btn btn-primary" style="width: 100%;">Book Appointment</a>
+            {% else %}
+            <form method="post" action="/doctors/{{ doctor.id }}/request">
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Request Doctor</button>
+            </form>
+            {% endif %}
+        {% elif not user %}
+            <a href="/login" class="btn btn-secondary" style="width: 100%;">Login to Request</a>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">No doctors have registered yet.</div>
+{% endif %}
+{% endblock %}

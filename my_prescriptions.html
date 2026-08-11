@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}My Prescriptions — MediAssist AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>My Prescriptions</h2>
+</div>
+
+{% if prescriptions %}
+    {% for rx in prescriptions %}
+    <div class="card prescription-card">
+        <div class="prescription-header">
+            <div>
+                <strong>Dr. {{ rx.doctor.user.name }}</strong>
+                <div style="color: var(--color-text-muted); font-size: 0.85rem;">{{ rx.doctor.specialization or "" }}</div>
+            </div>
+        </div>
+
+        {% if rx.medicines %}
+        <div>
+            {% for med in rx.medicines %}
+            <div class="medicine-row">
+                <span class="medicine-name">{{ med.name }}</span>
+                <span class="medicine-details">
+                    {{ med.dosage or "" }}{% if med.frequency %} &middot; {{ med.frequency }}{% endif %}{% if med.duration %} &middot; {{ med.duration }}{% endif %}
+                </span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if rx.notes %}
+        <div class="prescription-notes">{{ rx.notes }}</div>
+        {% endif %}
+    </div>
+    {% endfor %}
+{% else %}
+<div class="empty-state">No prescriptions yet.</div>
+{% endif %}
+{% endblock %}

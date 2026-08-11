@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}My Reports — MediAssist AI{% endblock %}
+
+{% block content %}
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+        <h2>My Medical Reports</h2>
+        <p>All your uploaded reports in one place.</p>
+    </div>
+    <a href="/reports/upload" class="btn btn-primary">+ Upload Report</a>
+</div>
+
+{% if reports %}
+{% for report in reports %}
+<div class="card report-card">
+    <div class="prescription-header">
+        <div>
+            <div class="report-type-icon">📄</div>
+            <strong>{{ report.type | replace('_', ' ') | title }}</strong>
+            <div style="color: var(--color-text-muted); font-size: 0.85rem;">
+                {{ report.hospital or "Unknown hospital" }}
+                {% if report.report_date %} &middot; {{ report.report_date.strftime('%B %d, %Y') }}{% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if report.extracted_text %}
+    <div class="report-extracted-text">{{ report.extracted_text[:500] }}{% if report.extracted_text | length > 500 %}...{% endif %}</div>
+    {% else %}
+    <p style="font-size: 0.85rem; font-style: italic;">No text could be extracted from this file.</p>
+    {% endif %}
+</div>
+{% endfor %}
+{% else %}
+<div class="empty-state">No reports uploaded yet. <a href="/reports/upload">Upload your first one</a>.</div>
+{% endif %}
+{% endblock %}

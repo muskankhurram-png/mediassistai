@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Book with Dr. {{ doctor.user.name }} — MediAssist AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Book an Appointment</h2>
+    <p>Available slots for Dr. {{ doctor.user.name }} &middot; {{ doctor.specialization or "General Practice" }}</p>
+</div>
+
+{% if slots %}
+<div class="slot-grid">
+    {% for slot in slots %}
+    <div class="card slot-card">
+        <div class="slot-date">{{ slot.date.strftime('%B %d, %Y') }}</div>
+        <div class="slot-time">{{ slot.date.strftime('%I:%M %p') }}</div>
+        <form method="post" action="/appointments/{{ slot.id }}/book">
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Book This Slot</button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">Dr. {{ doctor.user.name }} has no open slots right now.</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Doctor Dashboard — MediAssist AI{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+
+    <div class="stack-gap">
+        <div class="card profile-card">
+            <div class="profile-avatar">{{ user.name[0] | upper }}</div>
+            <h3>Dr. {{ user.name }}</h3>
+            <p style="margin-bottom: var(--space-sm);">{{ user.email }}</p>
+
+            {% if doctor %}
+            <div style="text-align: left; margin-top: var(--space-md);">
+                <div class="profile-detail-row">
+                    <span class="profile-detail-label">Specialization</span>
+                    <span class="profile-detail-value">{{ doctor.specialization or "Not set" }}</span>
+                </div>
+                <div class="profile-detail-row">
+                    <span class="profile-detail-label">Availability</span>
+                    <span class="profile-detail-value">{{ doctor.availability or "Not set" }}</span>
+                </div>
+                <div class="profile-detail-row">
+                    <span class="profile-detail-label">Assigned Patients</span>
+                    <span class="profile-detail-value">{{ patients | length }}</span>
+                </div>
+            </div>
+            {% else %}
+            <p style="margin-top: var(--space-sm);">You haven't completed your doctor profile yet.</p>
+            <a href="/profile/setup" class="btn btn-primary" style="margin-top: var(--space-sm); width: 100%;">Complete Profile</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="stack-gap">
+
+        <div class="card">
+            <div class="section-title">
+                <h3>Pending Patient Requests</h3>
+                {% if pending_requests %}
+                <span class="badge badge-warning">{{ pending_requests | length }} waiting</span>
+                {% endif %}
+            </div>
+
+            {% if pending_requests %}
+            <div class="list-stack">
+                {% for req in pending_requests %}
+                <div class="list-item">
+                    <div class="list-item-main">
+                        <strong>{{ req.patient.user.name }}</strong>
+                        <span>Requested {{ req.requested_at.strftime('%B %d, %Y') }}</span>
+                    </div>
+                    <div class="list-item-actions">
+                        <form method="post" action="/assignments/{{ req.id }}/approve" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-approve">Approve</button>
+                        </form>
+                        <form method="post" action="/assignments/{{ req.id }}/reject" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-reject">Reject</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">No pending requests right now.</div>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <div class="section-title">
+                <h3>Upcoming Appointments</h3>
+                <a href="/doctor/slots/new" class="btn btn-secondary" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Add Slot</a>
+            </div>
+
+            {% if appointments %}
+            <div class="list-stack">
+                {% for appt in appointments %}
+                <div class="list-item">
+                    <div class="list-item-main">
+                        <strong>{{ appt.patient.user.name if appt.patient else "Open slot" }}</strong>
+                        <span>{{ appt.date.strftime('%B %d, %Y at %I:%M %p') }}</span>
+                    </div>
+                    <span class="badge badge-primary">{{ appt.status }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">No upcoming appointments.</div>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <div class="section-title">
+                <h3>My Patients</h3>
+            </div>
+
+            {% if patients %}
+            <div class="list-stack">
+                {% for patient in patients %}
+                <div class="list-item">
+                    <div class="list-item-main">
+                        <strong>{{ patient.user.name }}</strong>
+                        <span>{{ patient.blood_group or "Blood group not set" }}</span>
+                    </div>
+                    <a href="/patients/{{ patient.id }}/prescriptions/new" class="btn btn-sm btn-secondary">Write Prescription</a>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">No assigned patients yet.</div>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

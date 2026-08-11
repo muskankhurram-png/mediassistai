@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Complete Your Profile — MediAssist AI{% endblock %}
+
+{% block content %}
+<div style="max-width: 480px; margin: 0 auto;">
+    <div class="page-header">
+        <h2>Complete Your Profile</h2>
+        <p>Just a few more details to get started.</p>
+    </div>
+
+    <div class="card">
+        <form method="post" action="/profile/setup">
+            {% if user.role == "patient" %}
+                <div class="form-group">
+                    <label for="blood_group">Blood Group</label>
+                    <select id="blood_group" name="blood_group">
+                        <option value="">Select...</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="allergies">Allergies</label>
+                    <textarea id="allergies" name="allergies" rows="2" placeholder="e.g. Penicillin, Peanuts"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="emergency_contact">Emergency Contact</label>
+                    <input type="text" id="emergency_contact" name="emergency_contact" placeholder="Phone number">
+                </div>
+            {% elif user.role == "doctor" %}
+                <div class="form-group">
+                    <label for="specialization">Specialization</label>
+                    <input type="text" id="specialization" name="specialization" placeholder="e.g. Cardiology">
+                </div>
+                <div class="form-group">
+                    <label for="availability">Availability</label>
+                    <input type="text" id="availability" name="availability" placeholder="e.g. Mon-Fri 9am-5pm">
+                </div>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: var(--space-sm);">
+                Save Profile
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

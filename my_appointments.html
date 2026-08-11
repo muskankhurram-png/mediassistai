@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}My Appointments — MediAssist AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>My Appointments</h2>
+</div>
+
+<div class="card">
+    <h3 style="margin-bottom: var(--space-sm);">Upcoming</h3>
+    {% if upcoming %}
+    <div class="list-stack">
+        {% for appt in upcoming %}
+        <div class="list-item">
+            <div class="list-item-main">
+                <strong>Dr. {{ appt.doctor.user.name }}</strong>
+                <span>{{ appt.date.strftime('%B %d, %Y at %I:%M %p') }}</span>
+            </div>
+            <div class="list-item-actions">
+                <span class="badge badge-primary">{{ appt.status }}</span>
+                <form method="post" action="/appointments/{{ appt.id }}/cancel">
+                    <button type="submit" class="btn btn-sm btn-reject">Cancel</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">No upcoming appointments.</div>
+    {% endif %}
+</div>
+
+<div class="card" style="margin-top: var(--space-md);">
+    <h3 style="margin-bottom: var(--space-sm);">History</h3>
+    {% if history %}
+    <div class="list-stack">
+        {% for appt in history %}
+        <div class="list-item">
+            <div class="list-item-main">
+                <strong>Dr. {{ appt.doctor.user.name }}</strong>
+                <span>{{ appt.date.strftime('%B %d, %Y at %I:%M %p') }}</span>
+            </div>
+            <span class="badge {{ 'badge-error' if appt.status == 'cancelled' else 'badge-success' }}">{{ appt.status }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">No appointment history yet.</div>
+    {% endif %}
+</div>
+{% endblock %}
