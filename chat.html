@@ -1,0 +1,46 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Ask About My Health — MediAssist AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Ask About Your Health Records</h2>
+    <p>Ask questions about your uploaded medical reports. Answers are generated only from your own records.</p>
+</div>
+
+<div class="card chat-page" style="padding: 0;">
+    <div class="chat-window" id="chatWindow">
+        {% if history %}
+            {% for entry in history %}
+            <div class="chat-bubble user">{{ entry.question }}</div>
+            <div class="chat-bubble ai">
+                {{ entry.answer }}
+                {% if entry.sources %}
+                <div class="chat-sources">Sources: {{ entry.sources | replace('\n', ', ') }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+        <div class="chat-empty">
+            <div class="chat-empty-icon">💬</div>
+            <p>Ask your first question about your uploaded reports.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <form class="chat-input-row" id="chatForm">
+        <input type="text" id="chatInput" placeholder="e.g. What does my blood test say?" autocomplete="off" required>
+        <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+</div>
+<p class="chat-disclaimer" style="margin-top: var(--space-sm); text-align: center;">
+    This assistant answers using your uploaded medical records for informational purposes only.
+    It is not a diagnosis — always consult your doctor for medical decisions.
+</p>
+
+<script src="/static/js/chat.js?v=1"></script>
+{% endblock %}
+
+
+
+

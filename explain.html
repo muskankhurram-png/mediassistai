@@ -1,0 +1,30 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Ask About a Disease or Medicine — MediAssist AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Learn About a Disease or Medicine</h2>
+    <p>Get a simple, plain-language explanation powered by AI.</p>
+</div>
+
+<div class="card" style="max-width: 640px;">
+    <div class="explain-tabs">
+        <div class="explain-tab active" data-mode="disease">Disease / Condition</div>
+        <div class="explain-tab" data-mode="medicine">Medicine</div>
+    </div>
+
+    <div class="explain-search-row">
+        <input type="text" id="explainInput" placeholder="e.g. Diabetes">
+        <button class="btn btn-primary" id="explainBtn">Explain</button>
+    </div>
+
+    <div class="ai-loading" id="explainLoading" style="display:none;">
+        <span class="spinner"></span> Generating explanation...
+    </div>
+
+    <div class="explain-result" id="explainResult"></div>
+</div>
+
+<script src="/static/js/explain.js?v=1"></script>
+{% endblock %}
