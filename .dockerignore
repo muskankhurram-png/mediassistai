@@ -1,0 +1,15 @@
+﻿.venv/
+__pycache__/
+*.pyc
+.git/
+.gitignore
+.env
+vectorstore_data/
+uploads/*
+!uploads/.gitkeep
+*.pdf
+*.jpg
+*.jpeg
+*.png
+.pytest_cache/
+alembic/versions/__pycache__/
